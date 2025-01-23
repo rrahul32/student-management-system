@@ -26,6 +26,7 @@ export default [
     rules: {
       ...tseslint.configs.recommended.rules,
       'prettier/prettier': 'error',
+      exportLocalsConvention: true,
     },
   },
   pluginJs.configs.recommended,
