@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { UserType } from '../utils';
+import { Department, UserType } from '../utils';
 
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   type: UserType;
-  department?: string;
+  department?: Department;
 }
 
 const userSchema = new Schema<IUser>({
@@ -14,7 +14,7 @@ const userSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   type: { type: String, required: true, enum: Object.values(UserType) },
-  department: { type: String },
+  department: { type: String, enum: Object.values(Department) },
 });
 
 export default mongoose.model<IUser>('User', userSchema);
