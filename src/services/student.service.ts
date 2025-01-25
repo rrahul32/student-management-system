@@ -1,7 +1,9 @@
 import { IUser } from '../models/user.model';
-import { AddStudentParamsDto } from '../utils/dtos/student.dto';
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
+import { AddStudentParamsDto, PageOptionsDto } from '../utils/dtos';
+import { UserType } from '../utils';
+import { getTasks } from './task.service';
 
 export const addStudent = async (
   params: AddStudentParamsDto,
@@ -13,9 +15,27 @@ export const addStudent = async (
     name,
     email,
     password: hashedPassword,
-    role: 'student',
+    type: UserType.student,
     department,
   });
 
   return student;
+};
+
+export const getStudentTasks = async (
+  email: string,
+  pageOptions: PageOptionsDto,
+) => {
+  const user: IUser | null = await User.findOne({
+    email,
+    type: UserType.student,
+  }).exec();
+  if (!user) {
+    return {
+      status: 404,
+      message: 'Student not found',
+    };
+  }
+
+  return getTasks(user._id, pageOptions);
 };

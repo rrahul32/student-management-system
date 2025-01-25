@@ -1,12 +1,27 @@
 import express from 'express';
-import { adminLoginController } from '../controllers/auth.controller';
 import authenticate from '../middlewares/authenticate.middleware';
 import { UserType } from '../utils';
+import {
+  addStudentController,
+  getStudentTasksController,
+} from '../controllers/student.controller';
+import { validateDto } from '../middlewares/validate-dto.middleware';
+import { AddStudentParamsDto } from '../utils/dtos';
 
 const router = express.Router();
 
-router.use(authenticate(UserType.admin));
+router.post(
+  '/',
+  authenticate(UserType.admin),
+  validateDto(AddStudentParamsDto),
+  addStudentController,
+);
 
-router.post('/admin/login', adminLoginController);
+router.post(
+  '/tasks',
+  authenticate(UserType.admin),
+  validateDto(AddStudentParamsDto),
+  getStudentTasksController,
+);
 
 export default router;

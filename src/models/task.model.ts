@@ -1,8 +1,9 @@
-import mongoose, { Schema, Document, Types } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { TaskStatus } from '../utils';
 import userModel from './user.model';
 
-export interface ITask extends Document {
+export interface ITask {
+  _id: Types.ObjectId;
   title: string;
   description: string;
   dueDate: Date;

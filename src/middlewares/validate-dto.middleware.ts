@@ -13,9 +13,10 @@ export const validateDto = <T extends object>(
       const validationErrors = errors.map((err) =>
         Object.values(err.constraints || {}).join(', '),
       );
-      return res
+      res
         .status(400)
         .json({ message: 'Validation error', errors: validationErrors });
+      return;
     }
 
     next();
