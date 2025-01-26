@@ -7,6 +7,7 @@ import {
 } from '../utils';
 import {
   addStudentController,
+  getStudentsController,
   getStudentTaskDetailsController,
   getStudentTasksController,
   updateStudentTaskStatusController,
@@ -21,6 +22,8 @@ router.post(
   validateDto(AddStudentParamsDto),
   addStudentController,
 );
+
+router.get('/students', authenticate(UserType.admin), getStudentsController);
 
 router.get('/tasks', authenticate(UserType.student), getStudentTasksController);
 

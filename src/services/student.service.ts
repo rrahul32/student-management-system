@@ -26,6 +26,33 @@ export const addStudent = async (
   return student;
 };
 
+export const getStudents = async (pageOptions: PageOptionsDto) => {
+  const list = await User.find(
+    {
+      type: UserType.student,
+    },
+    {},
+    {
+      skip: pageOptions.skip,
+      limit: pageOptions.limit,
+      sort: { createdAt: -1 },
+    },
+  )
+    .lean()
+    .exec();
+
+  const itemCount = await User.countDocuments({
+    type: UserType.student,
+  });
+
+  return {
+    status: 200,
+    message: 'Students retrieved successfully',
+    itemCount,
+    list,
+  };
+};
+
 export const getStudentTasks = async (
   email: string,
   pageOptions: PageOptionsDto,

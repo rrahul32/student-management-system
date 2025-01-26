@@ -9,22 +9,29 @@ export interface ITask {
   dueDate: Date;
   status: TaskStatus;
   assignedTo: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const taskSchema = new Schema<ITask>({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  dueDate: { type: Date, required: true },
-  status: {
-    type: String,
-    enum: Object.values(TaskStatus),
-    default: TaskStatus.pending,
+const taskSchema = new Schema<ITask>(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    dueDate: { type: Date, required: true },
+    status: {
+      type: String,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.pending,
+    },
+    assignedTo: {
+      type: Schema.Types.ObjectId,
+      ref: userModel.name,
+      required: true,
+    },
   },
-  assignedTo: {
-    type: Schema.Types.ObjectId,
-    ref: userModel.name,
-    required: true,
+  {
+    timestamps: true,
   },
-});
+);
 
 export default mongoose.model<ITask>('Task', taskSchema);

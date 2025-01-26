@@ -1,10 +1,14 @@
-import { ADMIN_CREDENTIALS } from '../config/admin';
 import jwt from 'jsonwebtoken';
 import { UserType } from '../utils';
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
 
 export const loginAdmin = async (email: string, password: string) => {
+  const ADMIN_CREDENTIALS = {
+    password: process.env.ADMIN_PASSWORD!,
+    email: process.env.ADMIN_EMAIL!,
+  };
+
   if (
     email === ADMIN_CREDENTIALS.email &&
     password === ADMIN_CREDENTIALS.password

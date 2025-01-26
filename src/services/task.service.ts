@@ -57,6 +57,7 @@ export const getTasks = async (
       {
         skip: pageOptions.skip,
         limit: pageOptions.limit,
+        sort: { createdAt: -1 },
       },
     )
       .lean()

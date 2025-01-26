@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {
   addStudent,
+  getStudents,
   getStudentTask,
   getStudentTasks,
   updateStudentTaskStatus,
@@ -15,6 +16,18 @@ export const addStudentController = async (req: Request, res: Response) => {
     res.status(201).json({ message: 'Student added successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error adding student', error });
+  }
+};
+
+export const getStudentsController = async (req: Request, res: Response) => {
+  try {
+    const { page, limit } = req.query;
+    const { status, ...body } = await getStudents(
+      new PageOptionsDto(Number(page) || 1, Number(limit) || 10),
+    );
+    res.status(status).json(body);
+  } catch (error) {
+    res.status(500).json({ message: 'Error getting students', error });
   }
 };
 
