@@ -3,10 +3,12 @@ import authenticate from '../middlewares/authenticate.middleware';
 import { UserType } from '../utils';
 import {
   addStudentController,
+  getStudentTaskDetailsController,
   getStudentTasksController,
+  updateStudentTaskStatusController,
 } from '../controllers/student.controller';
 import { validateDto } from '../middlewares/validate-dto.middleware';
-import { AddStudentParamsDto } from '../utils/dtos';
+import { AddStudentParamsDto, UpdateTaskStatusParamsDto } from '../utils/dtos';
 
 const router = express.Router();
 
@@ -17,11 +19,19 @@ router.post(
   addStudentController,
 );
 
-router.post(
-  '/tasks',
-  authenticate(UserType.admin),
-  validateDto(AddStudentParamsDto),
-  getStudentTasksController,
+router.get('/tasks', authenticate(UserType.student), getStudentTasksController);
+
+router.get(
+  '/tasks/:taskId',
+  authenticate(UserType.student),
+  getStudentTaskDetailsController,
+);
+
+router.patch(
+  '/tasks/:taskId',
+  authenticate(UserType.student),
+  validateDto(UpdateTaskStatusParamsDto),
+  updateStudentTaskStatusController,
 );
 
 export default router;

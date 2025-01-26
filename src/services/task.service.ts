@@ -79,3 +79,77 @@ export const getTasks = async (
     };
   }
 };
+
+export const getTask = async (studentId: Types.ObjectId, taskId: string) => {
+  try {
+    const task = await Task.findById(Types.ObjectId.createFromHexString(taskId))
+      .lean()
+      .exec();
+    if (!task) {
+      return {
+        status: 404,
+        message: 'Task not found',
+      };
+    }
+
+    if (task.assignedTo.toString() !== studentId.toString()) {
+      return {
+        status: 403,
+        message: 'You are not authorized to access this task',
+      };
+    }
+
+    return {
+      status: 200,
+      message: 'Task retrieved successfully',
+      task,
+    };
+  } catch (err) {
+    return {
+      status: 500,
+      message: 'Error getting task',
+      error: err,
+    };
+  }
+};
+
+export const updateTaskStatus = async (
+  studentId: Types.ObjectId,
+  taskId: string,
+  status: TaskStatus,
+) => {
+  try {
+    const task = await Task.findById(
+      Types.ObjectId.createFromHexString(taskId),
+    );
+
+    if (!task) {
+      return {
+        status: 404,
+        message: 'Task not found',
+      };
+    }
+
+    if (task.assignedTo.toString() !== studentId.toString()) {
+      return {
+        status: 403,
+        message: 'You are not authorized to access this task',
+      };
+    }
+
+    task.status = status;
+    const updatedTask = (await task.save()).toObject();
+
+    return {
+      status: 200,
+      message: 'Task updated successfully',
+      task: updatedTask,
+    };
+  } catch (err) {
+    return {
+      status: 500,
+      message: 'Error updating task',
+      error: err,
+    };
+  }
+};
