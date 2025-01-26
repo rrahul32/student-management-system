@@ -43,7 +43,12 @@ export const addStudent = async (params: AddStudentParamsDto) => {
     return {
       status: 201,
       message: 'Student added successfully',
-      student,
+      student: {
+        id: student._id.toString(),
+        name: student.name,
+        email: student.email,
+        department: student.department,
+      },
     };
   } catch (error) {
     return {

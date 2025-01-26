@@ -4,5 +4,6 @@ import { updateOverdueTasks } from '../services/task.service';
 export const startTaskScheduler = () => {
   console.log('Task scheduler started');
 
-  cron.schedule('0 0 * * *', updateOverdueTasks);
+  // Update overdue tasks every minute
+  cron.schedule('* * * * *', updateOverdueTasks);
 };
