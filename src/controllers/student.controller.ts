@@ -1,12 +1,17 @@
 import { Request, Response } from 'express';
 import {
   addStudent,
+  assignStudentTask,
+  completeStudentTask,
   getStudents,
   getStudentTask,
   getStudentTasks,
-  updateStudentTaskStatus,
 } from '../services/student.service';
-import { AddStudentParamsDto, PageOptionsDto } from '../utils';
+import {
+  AddStudentParamsDto,
+  AssignTaskParamsDto,
+  PageOptionsDto,
+} from '../utils';
 
 export const addStudentController = async (req: Request, res: Response) => {
   const params: AddStudentParamsDto = req.body;
@@ -45,18 +50,27 @@ export const getStudentTaskDetailsController = async (
   res.status(status).json(body);
 };
 
-export const updateStudentTaskStatusController = async (
+export const completeStudentTaskController = async (
   req: Request,
   res: Response,
 ) => {
   const { taskId } = req.params;
-  const { status } = req.body;
 
-  const { status: responseStatus, ...body } = await updateStudentTaskStatus(
+  const { status: responseStatus, ...body } = await completeStudentTask(
     taskId,
-    status,
     req.user!.email,
   );
 
   res.status(responseStatus).json(body);
+};
+
+export const assignStudentTaskController = async (
+  req: Request,
+  res: Response,
+) => {
+  const params: AssignTaskParamsDto = req.body;
+  const { email } = req.params;
+
+  const { status, ...body } = await assignStudentTask(email, params);
+  res.status(status).json(body);
 };

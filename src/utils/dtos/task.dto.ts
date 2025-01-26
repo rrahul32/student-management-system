@@ -1,16 +1,7 @@
 import { Type } from 'class-transformer';
-import {
-  IsAlphanumeric,
-  IsDate,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
-import { TaskStatus } from '../constants';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class AssignTaskParamsDto {
-  @IsAlphanumeric()
   @IsString()
   @IsNotEmpty()
   title: string;
@@ -22,12 +13,4 @@ export class AssignTaskParamsDto {
   @IsDate()
   @Type(() => Date)
   dueDate: Date;
-
-  @IsEmail()
-  studentEmail: string;
-}
-
-export class UpdateTaskStatusParamsDto {
-  @IsEnum(TaskStatus)
-  status: TaskStatus;
 }

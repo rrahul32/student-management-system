@@ -1,33 +1,20 @@
 import { Types } from 'mongoose';
 import Task from '../models/task.model';
-import User from '../models/user.model';
-import {
-  AssignTaskParamsDto,
-  PageOptionsDto,
-  TaskStatus,
-  UserType,
-} from '../utils';
+import { AssignTaskParamsDto, PageOptionsDto, TaskStatus } from '../utils';
 
-export const assignTask = async (params: AssignTaskParamsDto) => {
+export const assignTask = async (
+  studentId: Types.ObjectId,
+  params: AssignTaskParamsDto,
+) => {
   try {
     const { title, description, dueDate } = params;
-
-    const user = await User.findOne({
-      email: params.studentEmail,
-    });
-    if (!user || user.type !== UserType.student) {
-      return {
-        status: 404,
-        message: 'Student not found',
-      };
-    }
 
     const task = await Task.create({
       title,
       description,
       dueDate,
       status: TaskStatus.pending,
-      assignedTo: user._id,
+      assignedTo: studentId,
     });
 
     return {

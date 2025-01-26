@@ -1,16 +1,13 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate.middleware';
-import {
-  UserType,
-  AddStudentParamsDto,
-  UpdateTaskStatusParamsDto,
-} from '../utils';
+import { UserType, AddStudentParamsDto, AssignTaskParamsDto } from '../utils';
 import {
   addStudentController,
   getStudentsController,
   getStudentTaskDetailsController,
   getStudentTasksController,
-  updateStudentTaskStatusController,
+  completeStudentTaskController,
+  assignStudentTaskController,
 } from '../controllers/student.controller';
 import { validateDto } from '../middlewares/validate-dto.middleware';
 
@@ -23,21 +20,27 @@ router.post(
   addStudentController,
 );
 
-router.get('/students', authenticate(UserType.admin), getStudentsController);
+router.get('/', authenticate(UserType.admin), getStudentsController);
 
-router.get('/tasks', authenticate(UserType.student), getStudentTasksController);
+router.get('/task', authenticate(UserType.student), getStudentTasksController);
+
+router.post(
+  '/:email/task',
+  authenticate(UserType.admin),
+  validateDto(AssignTaskParamsDto),
+  assignStudentTaskController,
+);
 
 router.get(
-  '/tasks/:taskId',
+  '/task/:taskId',
   authenticate(UserType.student),
   getStudentTaskDetailsController,
 );
 
 router.patch(
-  '/tasks/:taskId',
+  '/task/:taskId',
   authenticate(UserType.student),
-  validateDto(UpdateTaskStatusParamsDto),
-  updateStudentTaskStatusController,
+  completeStudentTaskController,
 );
 
 export default router;

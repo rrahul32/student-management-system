@@ -1,15 +1,9 @@
-import {
-  IsAlphanumeric,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Department } from '../constants';
 
 export class AddStudentParamsDto {
   @IsNotEmpty()
-  @IsAlphanumeric()
+  @IsString()
   name: string;
 
   @IsNotEmpty()

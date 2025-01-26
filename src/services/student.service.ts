@@ -6,8 +6,14 @@ import {
   UserType,
   AddStudentParamsDto,
   PageOptionsDto,
+  AssignTaskParamsDto,
 } from '../utils';
-import { getTask, getTasks, updateTaskStatus } from './task.service';
+import {
+  assignTask,
+  getTask,
+  getTasks,
+  updateTaskStatus,
+} from './task.service';
 
 export const addStudent = async (params: AddStudentParamsDto) => {
   try {
@@ -54,7 +60,13 @@ export const getStudents = async (pageOptions: PageOptionsDto) => {
       {
         type: UserType.student,
       },
-      {},
+      {
+        name: 1,
+        email: 1,
+        department: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
       {
         skip: pageOptions.skip,
         limit: pageOptions.limit,
@@ -132,10 +144,32 @@ export const getStudentTask = async (taskId: string, email: string) => {
   }
 };
 
-export const updateStudentTaskStatus = async (
-  taskId: string,
-  status: TaskStatus,
+export const completeStudentTask = async (taskId: string, email: string) => {
+  try {
+    const user: IUser | null = await User.findOne({
+      email,
+      type: UserType.student,
+    }).exec();
+    if (!user) {
+      return {
+        status: 404,
+        message: 'Student not found',
+      };
+    }
+
+    return updateTaskStatus(user._id, taskId, TaskStatus.completed);
+  } catch (error) {
+    return {
+      status: 500,
+      message: 'Error updating task status',
+      error,
+    };
+  }
+};
+
+export const assignStudentTask = async (
   email: string,
+  task: AssignTaskParamsDto,
 ) => {
   try {
     const user: IUser | null = await User.findOne({
@@ -149,11 +183,11 @@ export const updateStudentTaskStatus = async (
       };
     }
 
-    return updateTaskStatus(user._id, taskId, status);
+    return assignTask(user._id, task);
   } catch (error) {
     return {
       status: 500,
-      message: 'Error updating task status',
+      message: 'Error assigning task',
       error,
     };
   }
