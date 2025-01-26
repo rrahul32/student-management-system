@@ -9,81 +9,127 @@ import {
 } from '../utils';
 import { getTask, getTasks, updateTaskStatus } from './task.service';
 
-export const addStudent = async (
-  params: AddStudentParamsDto,
-): Promise<IUser> => {
-  const { name, email, password, department } = params;
+export const addStudent = async (params: AddStudentParamsDto) => {
+  try {
+    const { name, email, password, department } = params;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const student = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    type: UserType.student,
-    department,
-  });
+    // Check if student already exists
+    const existingStudent = await User.findOne({
+      email,
+      type: UserType.student,
+    });
+    if (existingStudent) {
+      return {
+        status: 409,
+        message: 'Student already exists',
+      };
+    }
 
-  return student;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const student = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      type: UserType.student,
+      department,
+    });
+
+    return {
+      status: 201,
+      message: 'Student added successfully',
+      student,
+    };
+  } catch (error) {
+    return {
+      status: 500,
+      message: 'Error adding student',
+      error,
+    };
+  }
 };
 
 export const getStudents = async (pageOptions: PageOptionsDto) => {
-  const list = await User.find(
-    {
+  try {
+    const list = await User.find(
+      {
+        type: UserType.student,
+      },
+      {},
+      {
+        skip: pageOptions.skip,
+        limit: pageOptions.limit,
+        sort: { createdAt: -1 },
+      },
+    )
+      .lean()
+      .exec();
+
+    const itemCount = await User.countDocuments({
       type: UserType.student,
-    },
-    {},
-    {
-      skip: pageOptions.skip,
-      limit: pageOptions.limit,
-      sort: { createdAt: -1 },
-    },
-  )
-    .lean()
-    .exec();
+    });
 
-  const itemCount = await User.countDocuments({
-    type: UserType.student,
-  });
-
-  return {
-    status: 200,
-    message: 'Students retrieved successfully',
-    itemCount,
-    list,
-  };
+    return {
+      status: 200,
+      message: 'Students retrieved successfully',
+      itemCount,
+      list,
+    };
+  } catch (error) {
+    return {
+      status: 500,
+      message: 'Error getting students',
+      error,
+    };
+  }
 };
 
 export const getStudentTasks = async (
   email: string,
   pageOptions: PageOptionsDto,
 ) => {
-  const user: IUser | null = await User.findOne({
-    email,
-    type: UserType.student,
-  }).exec();
-  if (!user) {
+  try {
+    const user: IUser | null = await User.findOne({
+      email,
+      type: UserType.student,
+    }).exec();
+    if (!user) {
+      return {
+        status: 404,
+        message: 'Student not found',
+      };
+    }
+
+    return getTasks(user._id, pageOptions);
+  } catch (error) {
     return {
-      status: 404,
-      message: 'Student not found',
+      status: 500,
+      message: 'Error getting tasks',
+      error,
     };
   }
-
-  return getTasks(user._id, pageOptions);
 };
 
 export const getStudentTask = async (taskId: string, email: string) => {
-  const user: IUser | null = await User.findOne({
-    email,
-    type: UserType.student,
-  }).exec();
-  if (!user) {
+  try {
+    const user: IUser | null = await User.findOne({
+      email,
+      type: UserType.student,
+    }).exec();
+    if (!user) {
+      return {
+        status: 404,
+        message: 'Student not found',
+      };
+    }
+
+    return getTask(user._id, taskId);
+  } catch (error) {
     return {
-      status: 404,
-      message: 'Student not found',
+      status: 500,
+      message: 'Error getting task',
+      error,
     };
   }
-
-  return getTask(user._id, taskId);
 };
 
 export const updateStudentTaskStatus = async (
@@ -91,16 +137,24 @@ export const updateStudentTaskStatus = async (
   status: TaskStatus,
   email: string,
 ) => {
-  const user: IUser | null = await User.findOne({
-    email,
-    type: UserType.student,
-  }).exec();
-  if (!user) {
+  try {
+    const user: IUser | null = await User.findOne({
+      email,
+      type: UserType.student,
+    }).exec();
+    if (!user) {
+      return {
+        status: 404,
+        message: 'Student not found',
+      };
+    }
+
+    return updateTaskStatus(user._id, taskId, status);
+  } catch (error) {
     return {
-      status: 404,
-      message: 'Student not found',
+      status: 500,
+      message: 'Error updating task status',
+      error,
     };
   }
-
-  return updateTaskStatus(user._id, taskId, status);
 };
