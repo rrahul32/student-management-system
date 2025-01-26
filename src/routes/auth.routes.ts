@@ -4,7 +4,7 @@ import {
   studentLoginController,
 } from '../controllers/auth.controller';
 import { validateDto } from '../middlewares/validate-dto.middleware';
-import { LoginParamsDto } from '../utils/dtos';
+import { LoginParamsDto } from '../utils';
 
 const router = express.Router();
 

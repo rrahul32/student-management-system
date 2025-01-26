@@ -1,8 +1,12 @@
 import { Types } from 'mongoose';
 import Task from '../models/task.model';
 import User from '../models/user.model';
-import { TaskStatus, UserType } from '../utils';
-import { AssignTaskParamsDto, PageOptionsDto } from '../utils/dtos';
+import {
+  AssignTaskParamsDto,
+  PageOptionsDto,
+  TaskStatus,
+  UserType,
+} from '../utils';
 
 export const assignTask = async (params: AssignTaskParamsDto) => {
   try {
@@ -151,5 +155,24 @@ export const updateTaskStatus = async (
       message: 'Error updating task',
       error: err,
     };
+  }
+};
+
+export const updateOverdueTasks = async () => {
+  const now = new Date();
+  const updateResult = await Task.updateMany(
+    {
+      dueDate: { $lt: now },
+      status: TaskStatus.pending,
+    },
+    {
+      status: TaskStatus.overdue,
+    },
+  );
+
+  if (updateResult.modifiedCount) {
+    console.log(
+      `${updateResult.modifiedCount} overdue tasks updated successfully`,
+    );
   }
 };

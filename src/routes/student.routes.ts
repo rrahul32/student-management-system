@@ -1,6 +1,10 @@
 import express from 'express';
 import authenticate from '../middlewares/authenticate.middleware';
-import { UserType } from '../utils';
+import {
+  UserType,
+  AddStudentParamsDto,
+  UpdateTaskStatusParamsDto,
+} from '../utils';
 import {
   addStudentController,
   getStudentTaskDetailsController,
@@ -8,7 +12,6 @@ import {
   updateStudentTaskStatusController,
 } from '../controllers/student.controller';
 import { validateDto } from '../middlewares/validate-dto.middleware';
-import { AddStudentParamsDto, UpdateTaskStatusParamsDto } from '../utils/dtos';
 
 const router = express.Router();
 

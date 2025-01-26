@@ -5,7 +5,7 @@ import {
   getStudentTasks,
   updateStudentTaskStatus,
 } from '../services/student.service';
-import { AddStudentParamsDto, PageOptionsDto } from '../utils/dtos';
+import { AddStudentParamsDto, PageOptionsDto } from '../utils';
 
 export const addStudentController = async (req: Request, res: Response) => {
   const params: AddStudentParamsDto = req.body;

@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { UserType } from '../utils';
-import { JwtTokenPayload } from '../utils/types';
+import { UserType, JwtTokenPayload } from '../utils';
 
 const authenticate =
   (userType: UserType) => (req: Request, res: Response, next: NextFunction) => {

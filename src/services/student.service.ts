@@ -1,8 +1,12 @@
 import { IUser } from '../models/user.model';
 import User from '../models/user.model';
 import bcrypt from 'bcrypt';
-import { AddStudentParamsDto, PageOptionsDto } from '../utils/dtos';
-import { TaskStatus, UserType } from '../utils';
+import {
+  TaskStatus,
+  UserType,
+  AddStudentParamsDto,
+  PageOptionsDto,
+} from '../utils';
 import { getTask, getTasks, updateTaskStatus } from './task.service';
 
 export const addStudent = async (

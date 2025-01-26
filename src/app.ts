@@ -2,6 +2,7 @@ import express from 'express';
 import authRoutes from './routes/auth.routes';
 import studentRoutes from './routes/student.routes';
 import taskRoutes from './routes/task.routes';
+import { startTaskScheduler } from './utils';
 
 const app = express();
 
@@ -15,6 +16,14 @@ app.use('/api/student', studentRoutes);
 app.use('/api/task', taskRoutes);
 /**
  * Routes
+ */
+
+/**
+ * Cron jobs
+ */
+startTaskScheduler();
+/**
+ * Cron jobs
  */
 
 app.get('/', (req, res) => {
